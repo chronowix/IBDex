@@ -10,6 +10,14 @@ class IbdexApp extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: Définir ici le MaterialApp, le thème global et la page d'accueil
     // Utiliser HomePage() comme 'home' du MaterialApp
-    return const Placeholder();
+    return MaterialApp(
+      title: 'IBDEX',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        useMaterial3: true,
+      ),
+      home: const HomePage(),
+    );
+    //return const Placeholder();
   }
 }
