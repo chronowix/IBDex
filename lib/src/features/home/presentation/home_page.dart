@@ -11,6 +11,7 @@ class _HomePageState extends State<HomePage>{
   int _selectedIndex = 0; // quel onglet est actif
   //liste des pages
   static const List<Widget> _widgetOptions = <Widget>[
+    Center(child: Text('Accueil')),
     Center(child: Text('Articles')),
     Center(child: Text('Wiki')),
     Center(child: Text('Conseils')),
@@ -22,17 +23,43 @@ class _HomePageState extends State<HomePage>{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('IBDex'),
+        title: const Text('IBDex', style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.5),
+      ),
+      centerTitle: true,
+      elevation: 2,
       ),
       drawer: Drawer( //menu burger
         child: Column(
           children: [
-            const DrawerHeader(child: Text('Menu IBDex')),
-            ListTile(title: const Text('Mon Profil')),
-            ListTile(title: const Text('Paramètres')),
+            const Padding(padding: EdgeInsets.all(20.0)),
+            ListTile(
+              leading: const Icon(Icons.local_hospital),
+              title: const Text('Ma Santé'),
+              onTap: (){},
+            ),
+            ListTile(
+              leading: const Icon(Icons.support_agent),
+              title: const Text('Support'),
+              onTap: (){},
+            ),
+            ListTile(
+              leading: const Icon(Icons.person),
+              title: const Text('Mon Profil'),
+              onTap: (){},
+            ),
+            ListTile(
+              leading: const Icon(Icons.settings),
+              title: const Text('Paramètres'),
+              onTap: (){},
+            ),
             const Spacer(),
+            ListTile(
+              leading: const Icon(Icons.help),
+              title: const Text('A Propos'),
+              onTap: (){},
+            ),
             const Padding(
-                padding: EdgeInsets.all(16.0),
+              padding: EdgeInsets.all(16.0),
               child: Text('© 2026 IBDEX - Tous droits réservés', style: TextStyle(fontSize: 12)),
             ),
           ],
@@ -41,13 +68,18 @@ class _HomePageState extends State<HomePage>{
       body: _widgetOptions[_selectedIndex], //affichage de la page sélectionnée
       bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
+          showUnselectedLabels: false,
           currentIndex: _selectedIndex,
+          selectedItemColor: Colors.blue,
+          unselectedItemColor: Colors.grey,
+          showSelectedLabels: true,
           onTap: (int index){
             setState(() {
               _selectedIndex = index; //maj de l'index
             });
           },
           items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home_filled), label: 'Accueil'),
             BottomNavigationBarItem(icon: Icon(Icons.article), label: 'Articles'),
             BottomNavigationBarItem(icon: Icon(Icons.menu_book), label: 'Wiki'),
             BottomNavigationBarItem(icon: Icon(Icons.lightbulb), label: 'Conseils'),
