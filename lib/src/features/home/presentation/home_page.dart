@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ibdex/src/features/advice/presentation/advice_page.dart';
 import 'package:ibdex/src/features/articles/presentation/articles_page.dart';
 import 'package:ibdex/src/features/home/presentation/widgets/home_feed.dart';
 
@@ -16,7 +17,7 @@ class _HomePageState extends State<HomePage>{
     const HomeFeed(),
     const ArticlesPage(),
     Center(child: Text('Wiki')),
-    Center(child: Text('Conseils')),
+    const AdvicesPage(),
     Center(child: Text('Nutrition')),
     Center(child: Text('Carte')),
   ];
