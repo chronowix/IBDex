@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ibdex/src/features/articles/presentation/articles_page.dart';
 import 'package:ibdex/src/features/home/presentation/widgets/home_feed.dart';
 
 //Page d'accueil
@@ -13,7 +14,7 @@ class _HomePageState extends State<HomePage>{
   //liste des pages
   static final List<Widget> _widgetOptions = <Widget>[
     const HomeFeed(),
-    Center(child: Text('Articles')),
+    const ArticlesPage(),
     Center(child: Text('Wiki')),
     Center(child: Text('Conseils')),
     Center(child: Text('Nutrition')),
