@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ibdex/src/features/home/presentation/widgets/home_feed.dart';
 
 //Page d'accueil
 class HomePage extends StatefulWidget {
@@ -10,8 +11,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage>{
   int _selectedIndex = 0; // quel onglet est actif
   //liste des pages
-  static const List<Widget> _widgetOptions = <Widget>[
-    Center(child: Text('Accueil')),
+  static final List<Widget> _widgetOptions = <Widget>[
+    const HomeFeed(),
     Center(child: Text('Articles')),
     Center(child: Text('Wiki')),
     Center(child: Text('Conseils')),
@@ -23,15 +24,17 @@ class _HomePageState extends State<HomePage>{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('IBDex', style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.5),
-      ),
-      centerTitle: true,
-      elevation: 2,
+        title: const Text(
+          'IBDex',
+          style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.5),
+        ),
+        centerTitle: true,
+        elevation: 2,
       ),
       drawer: Drawer( //menu burger
         child: Column(
           children: [
-            const Padding(padding: EdgeInsets.all(20.0)),
+            SizedBox(height: 40),
             ListTile(
               leading: const Icon(Icons.local_hospital),
               title: const Text('Ma Santé'),
