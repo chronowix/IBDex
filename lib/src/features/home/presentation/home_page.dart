@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ibdex/src/features/advice/presentation/advice_page.dart';
 import 'package:ibdex/src/features/articles/presentation/articles_page.dart';
 import 'package:ibdex/src/features/home/presentation/widgets/home_feed.dart';
+import 'package:ibdex/src/features/nutrition/presentation/nutrition_page.dart';
 
 //Page d'accueil
 class HomePage extends StatefulWidget {
@@ -18,7 +19,7 @@ class _HomePageState extends State<HomePage>{
     const ArticlesPage(),
     Center(child: Text('Wiki')),
     const AdvicesPage(),
-    Center(child: Text('Nutrition')),
+    const NutritionPage(),
     Center(child: Text('Carte')),
   ];
 
