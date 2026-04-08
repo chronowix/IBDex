@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ibdex/src/features/articles/presentation/article_detail_page.dart';
 import '../../../shared/models/article.dart';
 
 class ArticlesPage extends StatelessWidget {
@@ -32,7 +33,7 @@ class ArticlesPage extends StatelessWidget {
     ),
   ];
 
-  Widget _buildArticleItem(Article article){
+  Widget _buildArticleItem(BuildContext context, Article article){
     return Card(
       child: ListTile(
         leading: Image.network(article.imageUrl, width: 80, fit: BoxFit.cover),
@@ -40,6 +41,10 @@ class ArticlesPage extends StatelessWidget {
         subtitle: Text(article.category),
         onTap: (){
           //TODO: ouvrir détail de l'article
+          Navigator.of(context).push(
+            MaterialPageRoute(
+                builder: (context) => ArticleDetailPage(article: article))
+          );
         },
       ),
     );
@@ -52,7 +57,7 @@ class ArticlesPage extends StatelessWidget {
         itemCount: _mockArticles.length,
         itemBuilder: (context, index){
           final article = _mockArticles[index];
-          return _buildArticleItem(article);
+          return _buildArticleItem(context, article);
         },
       ),
     );
