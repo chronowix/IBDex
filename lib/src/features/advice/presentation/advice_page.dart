@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ibdex/src/shared/models/advice.dart';
+import 'advice_detail_page.dart';
 
 class AdvicesPage extends StatelessWidget {
   const AdvicesPage({super.key});
@@ -35,10 +36,14 @@ class AdvicesPage extends StatelessWidget {
     ),
   ];
 
-  Widget _buildAdviceItem(Advice advice) {
+  Widget _buildAdviceItem(BuildContext context, Advice advice) {
     return InkWell(
       onTap: () {
         // TODO: Implémenter la navigation vers le détail du conseil
+        Navigator.of(context).push(
+            MaterialPageRoute(
+                builder: (context) => AdviceDetailPage(advice: advice))
+        );
       },
       borderRadius: BorderRadius.circular(15),
       child: Card(
@@ -114,7 +119,7 @@ class AdvicesPage extends StatelessWidget {
         itemCount: _mockAdvices.length,
         itemBuilder: (context, index){
           final advice = _mockAdvices[index];
-          return _buildAdviceItem(advice);
+          return _buildAdviceItem(context, advice);
         },
       ),
     );
