@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ibdex/src/features/about/presentation/about_page.dart';
 import 'package:ibdex/src/features/advice/presentation/advice_page.dart';
 import 'package:ibdex/src/features/articles/presentation/articles_page.dart';
 import 'package:ibdex/src/features/home/presentation/widgets/home_feed.dart';
@@ -62,7 +63,11 @@ class _HomePageState extends State<HomePage>{
             ListTile(
               leading: const Icon(Icons.help),
               title: const Text('A Propos'),
-              onTap: (){},
+              onTap: (){
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const AboutPage()),
+                );
+              },
             ),
             const Padding(
               padding: EdgeInsets.all(16.0),
