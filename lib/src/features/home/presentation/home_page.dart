@@ -4,6 +4,7 @@ import 'package:ibdex/src/features/advice/presentation/advice_page.dart';
 import 'package:ibdex/src/features/articles/presentation/articles_page.dart';
 import 'package:ibdex/src/features/home/presentation/widgets/home_feed.dart';
 import 'package:ibdex/src/features/nutrition/presentation/nutrition_page.dart';
+import 'package:ibdex/src/features/support/presentation/support_page.dart';
 
 //Page d'accueil
 class HomePage extends StatefulWidget {
@@ -47,7 +48,11 @@ class _HomePageState extends State<HomePage>{
             ListTile(
               leading: const Icon(Icons.support_agent),
               title: const Text('Support'),
-              onTap: (){},
+              onTap: (){
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const SupportPage()),
+                );
+              },
             ),
             ListTile(
               leading: const Icon(Icons.person),
