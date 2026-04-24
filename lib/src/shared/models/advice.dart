@@ -12,9 +12,9 @@ class Advice {
   Advice({
     required this.id,
     required this.title,
-    required this.category,
     required this.content,
     required this.imageUrl,
+    required this.category,
     required this.publishedAt,
     required this.myExperience,
   });

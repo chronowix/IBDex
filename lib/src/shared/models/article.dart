@@ -13,7 +13,7 @@ class Article {
     required this.title,
     required this.content,
     required this.imageUrl,
-    required this.publishedAt,
     required this.category,
+    required this.publishedAt,
   });
 }
