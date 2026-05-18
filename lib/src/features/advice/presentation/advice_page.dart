@@ -1,45 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:ibdex/src/shared/data/mock_data.dart';
 import 'package:ibdex/src/shared/models/advice.dart';
 import 'advice_detail_page.dart';
 
 class AdvicesPage extends StatelessWidget {
   const AdvicesPage({super.key});
 
-  // mock des conseils
-  static final List<Advice> _mockAdvices = [
-    Advice(
-      id: '1',
-      title: "Ne négligez pas les examens biologiques!",
-      category: 'Maladie',
-      content: "Il est important de faire ses prises de sang et ses coprocultures...",
-      imageUrl: 'https://picsum.photos/400/200?random=11',
-      publishedAt: DateTime.now(),
-      myExperience: "De mon point de vue, j'ai eu beaucoup de mal à faire mes examens par procrastination ou par manque de temps..."
-    ),
-    Advice(
-      id: '2',
-      title: "Concernant la demande RQTH",
-      category: 'Maladie',
-      content: "Dès que vous avez reçu votre diagnostic, il est conseillé que vous fassiez votre demande RQTH...",
-      imageUrl: 'https://picsum.photos/400/200?random=12',
-      publishedAt: DateTime.now(),
-      myExperience: "De mon côté, j'ai eu beaucoup de mal à mettre en place une RQTH dû à l'attente de validation..."
-    ),
-    Advice(
-      id: '3',
-      title: "Conseils simple sur l'alimentation",
-      category: 'Nutrition',
-      content: "Si vous ressentez des poussées à force de manger la même chose ou un même aliment...",
-      imageUrl: 'https://picsum.photos/400/200?random=13',
-      publishedAt: DateTime.now(),
-      myExperience: "De mon côté, j'ai du limiter les sodas et le gluten car j'ai remarqué que mes poussées se déclenchaient..."
-    ),
-  ];
-
   Widget _buildAdviceItem(BuildContext context, Advice advice) {
     return InkWell(
       onTap: () {
-        // TODO: Implémenter la navigation vers le détail du conseil
         Navigator.of(context).push(
             MaterialPageRoute(
                 builder: (context) => AdviceDetailPage(advice: advice))
@@ -114,11 +83,12 @@ class AdvicesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final advices = MockData.advices;
     return Scaffold(
       body: ListView.builder(
-        itemCount: _mockAdvices.length,
+        itemCount: advices.length,
         itemBuilder: (context, index){
-          final advice = _mockAdvices[index];
+          final advice = advices[index];
           return _buildAdviceItem(context, advice);
         },
       ),

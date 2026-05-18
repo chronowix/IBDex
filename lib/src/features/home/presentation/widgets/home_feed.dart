@@ -1,7 +1,6 @@
 // Widget fil d'actualité de l'onglet Accueil
 import 'package:flutter/material.dart';
-import 'package:ibdex/src/shared/models/article.dart';
-import 'package:ibdex/src/shared/models/advice.dart';
+import 'package:ibdex/src/shared/data/mock_data.dart';
 import 'package:ibdex/src/features/articles/presentation/article_detail_page.dart';
 import 'package:ibdex/src/features/advice/presentation/advice_detail_page.dart';
 
@@ -32,9 +31,9 @@ class HomeFeed extends StatelessWidget{
 
   @override
   Widget build(BuildContext context){
-    // liste des nouveaux posts
-    final articleTest = Article(id: '1', title: 'Actu Crohn', content: 'Découvrez les dernières avancées sur les traitements personnalisés à Rennes...', imageUrl: 'https://picsum.photos/600/300?random=1', publishedAt: DateTime.now(), category: 'Maladies');
-    final adviceTest = Advice(id: '1', title: 'Conseil Nutrition', content: 'Si vous ressentez des poussées à force de manger la même chose ou un même aliment...', imageUrl: 'https://picsum.photos/600/300?random=2', publishedAt: DateTime.now(), category: 'Nutrition', myExperience: 'De mon côté, j\'ai dû limiter les sodas et le gluten car j\'ai remarqué que mes poussées se déclenchaient...');
+    // Utilisation des données centralisées MockData
+    final articleTest = MockData.articles[0];
+    final adviceTest = MockData.advices[0];
     
     return ListView(
       padding: const EdgeInsets.all(16.0),
