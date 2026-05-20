@@ -6,6 +6,7 @@ import 'package:ibdex/src/features/articles/presentation/articles_page.dart';
 import 'package:ibdex/src/features/home/presentation/widgets/home_feed.dart';
 import 'package:ibdex/src/features/nutrition/presentation/nutrition_page.dart';
 import 'package:ibdex/src/features/support/presentation/support_page.dart';
+import 'package:ibdex/src/features/wiki/presentation/wiki_page.dart';
 
 //Page d'accueil
 class HomePage extends StatefulWidget {
@@ -20,7 +21,7 @@ class _HomePageState extends State<HomePage>{
   static final List<Widget> _widgetOptions = <Widget>[
     const HomeFeed(),
     const ArticlesPage(),
-    Center(child: Text('Wiki')),
+    const WikiPage(),
     const AdvicesPage(),
     const NutritionPage(),
     Center(child: Text('Carte')),
