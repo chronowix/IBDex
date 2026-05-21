@@ -83,11 +83,14 @@ class _WikiCategoryPageState extends State<WikiCategoryPage>{
                 height: 60,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8),
-                  child: Image.network(
-                    article.thumbnailUrl!,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) =>
-                        const Icon(Icons.broken_image),
+                  child: Container(
+                    color: Colors.grey.shade100, // Fond blanc cassé
+                    child: Image.network(
+                      article.thumbnailUrl!,
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stackTrace) =>
+                          const Icon(Icons.broken_image),
+                    ),
                   ),
                 ),
               )

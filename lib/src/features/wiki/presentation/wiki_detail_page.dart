@@ -15,11 +15,14 @@ class WikiDetailPage extends StatelessWidget{
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (article.thumbnailUrl != null)
-              Image.network(
-                article.thumbnailUrl!,
+              Container(
+                color: Colors.grey.shade100, // Fond blanc cassé pour la lisibilité
                 width: double.infinity,
                 height: 250,
-                fit: BoxFit.cover,
+                child: Image.network(
+                  article.thumbnailUrl!,
+                  fit: BoxFit.contain, // Pour ne pas couper les schémas médicaux
+                ),
               ),
             Padding(
               padding: const EdgeInsets.all(20.0),
