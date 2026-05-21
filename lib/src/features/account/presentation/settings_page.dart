@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ibdex/src/shared/utils/theme_controller.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -25,7 +26,7 @@ class _SettingsPageState extends State<SettingsPage> {
             onChanged: (bool value) {
               setState(() {
                 _isDarkMode = value;
-                // TODO: à faire plus tard pour changer le thème global
+                themeNotifier.value = value ? ThemeMode.dark : ThemeMode.light;
               });
             },
             secondary: const Icon(Icons.dark_mode),
