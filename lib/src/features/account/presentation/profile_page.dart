@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ProfilePage extends StatelessWidget{
   const ProfilePage({super.key});
 @override
 Widget build(BuildContext context){
+  final user = Supabase.instance.client.auth.currentUser;
+  final email = user?.email ?? 'Email inconnu';
+  final fullName = user?.userMetadata?['full_name'] as String? ?? 'Utilisateur IBDex';
+  final phone = user?.userMetadata?['phone'] as String? ?? 'Non renseigné';
+  final city = user?.userMetadata?['city'] as String? ?? 'Non renseigné';
   return Scaffold(
     appBar: AppBar(title: const Text('Mon Profil')),
     body: SingleChildScrollView(
@@ -38,28 +44,47 @@ Widget build(BuildContext context){
             ),
           ),
           const SizedBox(height: 20),
-            const Text(
-              'User IBDex',
+            Text(
+              fullName,
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
-            const Text('Rennes, Bretagne', style: TextStyle(color: Colors.grey)),
+            Text(city, style: TextStyle(color: Colors.grey)),
             const SizedBox(height: 30),
 
             const Divider(),
-            _buildProfileItem(Icons.email, 'Email', 'user@ibdex.com'),
-            _buildProfileItem(Icons.phone, 'Téléphone', '06 01 02 03 04'),
-            _buildProfileItem(Icons.location_on, 'Ville', 'Rennes'),
+            _buildProfileItem(Icons.email, 'Email', email),
+            _buildProfileItem(Icons.phone, 'Téléphone', phone),
+            _buildProfileItem(Icons.location_on, 'Ville', city),
 
             const SizedBox(height: 20),
 
             Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: ElevatedButton(
-                  onPressed: (){
-                  //TODO: form modification
-                  },
-                  style: ElevatedButton.styleFrom(minimumSize: const Size(double.infinity, 50)),
-                  child: const Text('Modifier mon profil'),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                children: [
+                  ElevatedButton(
+                    onPressed: (){
+                    //TODO: form modification
+                    },
+                    style: ElevatedButton.styleFrom(minimumSize: const Size(double.infinity, 50)),
+                    child: const Text('Modifier mon profil'),
+                  ),
+                  const SizedBox(height: 12),
+                  OutlinedButton(
+                    onPressed: () async {
+                      await Supabase.instance.client.auth.signOut();
+                      if (context.mounted) {
+                        Navigator.of(context).pop();
+                      }
+                    },
+                    style: OutlinedButton.styleFrom(
+                      minimumSize: const Size(double.infinity, 50),
+                      side: const BorderSide(color: Colors.red),
+                      foregroundColor: Colors.red,
+                    ),
+                    child: const Text('Se déconnecter'),
+                  ),
+                ],
               ),
             ),
           ],
