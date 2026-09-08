@@ -78,7 +78,6 @@ class _SignupPageState extends State<SignupPage>{
                   border: OutlineInputBorder(),
                 ),
                 validator: (value){
-                  // TODO : retourner msg si champ vide
                   if(value == null || value.isEmpty) {
                     return 'Champ vide! Nom et prénom obligatoire';
                   }
@@ -95,7 +94,6 @@ class _SignupPageState extends State<SignupPage>{
                   border: OutlineInputBorder(),
                 ),
                 validator: (value){
-                  // TODO : vérifier si format mail valide (contient @)
                   if(value == null || value.isEmpty){
                     return 'Champ vide! Veuillez rentrer un email';
                   }
@@ -116,7 +114,6 @@ class _SignupPageState extends State<SignupPage>{
                   border: OutlineInputBorder(),
                 ),
                 validator: (value){
-                  // TODO : vérifier longueur
                   if(value == null || value.isEmpty){
                     return 'Champ vide! Veuillez rentrer un mot de passe';
                   }

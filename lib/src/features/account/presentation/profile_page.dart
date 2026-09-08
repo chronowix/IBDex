@@ -72,9 +72,6 @@ Widget build(BuildContext context){
                   const SizedBox(height: 12),
                   OutlinedButton(
                     onPressed: () async {
-                      // TODO: Se déconnecter de Supabase via Supabase.instance.client.auth.signOut()
-                      // Astuce: Après déconnexion, AuthGate détectera le changement d'état et affichera LoginPage.
-                      // Pensez à faire un Navigator.of(context).pop() pour fermer cette page de profil.
                       await Supabase.instance.client.auth.signOut();
                       if (context.mounted) {
                         Navigator.of(context).pop();
