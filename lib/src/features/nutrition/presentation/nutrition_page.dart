@@ -178,7 +178,6 @@ class _NutritionPageState extends State<NutritionPage> {
 
   /// Construit une tuile d'affichage pour un produit alimentaire.
   Widget _buildProductTile(FoodProduct product) {
-    // TODO: 1. Afficher l'image du produit (product.imageUrl) ou une icône générique
     return ListTile(
       leading: product.imageUrl != null ? Image.network(
         product.imageUrl!,
