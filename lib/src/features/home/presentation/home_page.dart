@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:ibdex/src/features/about/presentation/about_page.dart';
+import 'package:ibdex/src/features/account/presentation/profile_page.dart';
+import 'package:ibdex/src/features/account/presentation/settings_page.dart';
 import 'package:ibdex/src/features/advice/presentation/advice_page.dart';
 import 'package:ibdex/src/features/articles/presentation/articles_page.dart';
 import 'package:ibdex/src/features/home/presentation/widgets/home_feed.dart';
+import 'package:ibdex/src/features/map/presentation/map_page.dart';
 import 'package:ibdex/src/features/nutrition/presentation/nutrition_page.dart';
+import 'package:ibdex/src/features/support/presentation/support_page.dart';
+import 'package:ibdex/src/features/wiki/presentation/wiki_page.dart';
 
 //Page d'accueil
 class HomePage extends StatefulWidget {
@@ -17,10 +23,10 @@ class _HomePageState extends State<HomePage>{
   static final List<Widget> _widgetOptions = <Widget>[
     const HomeFeed(),
     const ArticlesPage(),
-    Center(child: Text('Wiki')),
+    const WikiPage(),
     const AdvicesPage(),
     const NutritionPage(),
-    Center(child: Text('Carte')),
+    const MapPage()
   ];
 
   @override
@@ -46,23 +52,39 @@ class _HomePageState extends State<HomePage>{
             ListTile(
               leading: const Icon(Icons.support_agent),
               title: const Text('Support'),
-              onTap: (){},
+              onTap: (){
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const SupportPage()),
+                );
+              },
             ),
             ListTile(
               leading: const Icon(Icons.person),
               title: const Text('Mon Profil'),
-              onTap: (){},
+              onTap: (){
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const ProfilePage()),
+                );
+              },
             ),
             ListTile(
               leading: const Icon(Icons.settings),
               title: const Text('Paramètres'),
-              onTap: (){},
+              onTap: (){
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const SettingsPage())
+                );
+              },
             ),
             const Spacer(),
             ListTile(
               leading: const Icon(Icons.help),
               title: const Text('A Propos'),
-              onTap: (){},
+              onTap: (){
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const AboutPage()),
+                );
+              },
             ),
             const Padding(
               padding: EdgeInsets.all(16.0),
