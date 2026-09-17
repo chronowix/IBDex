@@ -1,118 +1,202 @@
 import 'package:flutter/material.dart';
+import 'package:ibdex/src/features/nutrition/presentation/product_detail_screen.dart';
+import '../data/open_food_facts_service.dart';
+import '../models/food_product.dart';
+import 'barcode_scanner_screen.dart';
 
-// Page de conseil nutrition, cette page sera susceptible d'évoluer avec une API plus complète lorsque l'appli sera plus conséquente
-class NutritionPage extends StatelessWidget {
+// Page dédiée à la recherche et à l'analyse nutritionnelle des aliments.
+class NutritionPage extends StatefulWidget {
   const NutritionPage({super.key});
 
-  Widget _buildCategoryTile(String title, List<Widget> items){
-    return ExpansionTile(
-      title: Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
-      children: items,
-    );
+  @override
+  State<NutritionPage> createState() => _NutritionPageState();
+}
+
+class _NutritionPageState extends State<NutritionPage> {
+  final _searchController = TextEditingController();
+  final _foodService = OpenFoodFactsService();
+
+  List<FoodProduct> _products = [];
+  bool _isLoading = false;
+  String? _errorMessage;
+
+  /// Lance la recherche auprès de l'API Open Food Facts.
+  Future<void> _onSearchSubmitted(String query) async {
+    if (query.trim().isEmpty) {
+      setState(() {
+        _products.clear();
+      });
+      return;
+    }
+    if (_isLoading){
+      _isLoading = true;
+      _errorMessage = null;
+    }
+
+    // chargement de la liste
+    setState(() {
+      _isLoading =true;
+      _errorMessage = null;
+    });
+
+    try {
+      final results = await _foodService.searchProducts(query);
+      if (mounted) {
+        setState(() {
+          _products = results;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _errorMessage = ('Erreur lors de la recherche : $e');
+          _isLoading = false;
+        });
+      }
+    }
   }
 
-  Widget _buildFoodItem(String name, String status, String advice){
-    return ListTile(
-      title: Text(name),
-      subtitle: Text(advice),
-      trailing: Icon(
-        status == 'Conseillé' ? Icons.check_circle : Icons.warning_rounded,
-        color: status == 'Conseillé' ? Colors.green : status == 'À éviter' ? Colors.red : Colors.orange,
-      ),
-
+  Future<void> _onScanPressed() async {
+    final barcode = await Navigator.of(context).push<String>(
+      MaterialPageRoute(builder: (_) => const BarcodeScannerScreen()),
     );
+
+    if (barcode == null || !mounted) return;
+
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      final product = await _foodService.getProductByBarcode(barcode);
+      if (!mounted) return;
+
+      if (product == null) {
+        setState(() {
+          _isLoading = false;
+          _errorMessage = 'Produit non trouvé pour ce code-barre';
+        });
+        return;
+      }
+
+      setState(() {
+        _products = [product]; //affiche le produit comme résultat
+        _isLoading = false;
+      });
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _errorMessage = 'Erreur lors de la récupération du produit: $e';
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(
+      body: Column(
         children: [
-          _buildCategoryTile('Féculents/Légumineuses',[
-            _buildFoodItem('Riz blanc', 'Conseillé', 'Parfait lors des poussées'),
-            _buildFoodItem('Riz rond/à sushi', 'Conseillé', 'Parfait lors des poussées'),
-            _buildFoodItem('Pâtes blanches', 'Conseillé', 'Très digeste'),
-            _buildFoodItem('Semoule', 'Conseillé', 'Privilégier la semoule fine type couscous'),
-            _buildFoodItem('Pommes de terres', 'Conseillé', 'En purée ou en vapeur'),
-            _buildFoodItem('Pain blanc', 'Conseillé', 'Pauvre en fibres'),
-            _buildFoodItem('Biscottes', 'Conseillé', 'Pauvre en fibres'),
-            _buildFoodItem('Maïs', 'Conseillé', 'Privilégier le maïs raffiné type polenta fine'),
-            _buildFoodItem('Tapioca', 'Conseillé', 'Remplace les farines contenant du gluten'),
-            _buildFoodItem('Fécule de maïs (Maïzena)', 'Conseillé', 'Remplace les farines contenant du gluten'),
+          // Barre de recherche
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: TextField(
+              controller: _searchController,
+              decoration: InputDecoration(
+                hintText: 'Rechercher un aliment, produit...',
+                prefixIcon: const Icon(Icons.search),
+                suffixIcon: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.qr_code_scanner),
+                      onPressed: _onScanPressed,
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: () {
+                        _searchController.clear();
+                        setState(() => _products.clear());
+                      },
+                    ),
+                  ],
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              onSubmitted: _onSearchSubmitted,
+            ),
+          ),
 
-            _buildFoodItem('Boulgour', 'Modéré', 'à consommer en petites quantités'),
-            _buildFoodItem('Quinoa', 'Modéré', 'Digestibilité variable'),
-            _buildFoodItem('Blé', 'Modéré', 'Les formes complètes du blé sont à éviter'),
-            _buildFoodItem('Avoine', 'Modéré', 'Privilégier du son d\'avoine ou des flocons bien cuits'),
-            _buildFoodItem('Sarrasin', 'Modéré', 'Digestibilité variable'),
-            _buildFoodItem('Pommes de terres rissolés/frites', 'Modéré', 'Peut provoquer des poussées si mangés en quantité importante!'),
-            _buildFoodItem('Patate douce', 'Modéré', 'Contient des fibres mais bien tolérée'),
-            _buildFoodItem('Épeautre', 'Modéré', 'Mal toléré lors des poussées'),
-            _buildFoodItem('Soja', 'Modéré', 'Fermentation: provoque des gaz/ballonnements et diarrhée'),
-
-
-            _buildFoodItem('Pâtes complètes', 'À éviter', 'Les fibres dites "dures" peuvent irriter le microbiote'),
-            _buildFoodItem('Orge', 'À éviter', 'Riche en fibres'),
-            _buildFoodItem('Seigle', 'À éviter', 'Riche en fibres'),
-            _buildFoodItem('Pain complet', 'À éviter', 'Irritation du microbiote si mangé en quantité quotidiennement'),
-            _buildFoodItem('Lentilles', 'À éviter', 'Parfait lors des poussées'),
-            _buildFoodItem('Pois chiches', 'À éviter', 'Fermentation: provoque des gaz/ballonnements et diarrhée'),
-            _buildFoodItem('Haricots blancs', 'À éviter', 'Fermentation: provoque des gaz/ballonnements et diarrhée'),
-            _buildFoodItem('Haricots rouges', 'À éviter', 'Fermentation: provoque des gaz/ballonnements et diarrhée'),
-            _buildFoodItem('Fèves', 'À éviter', 'Fermentation: provoque des gaz/ballonnements et diarrhée'),
-            _buildFoodItem('Flageolets', 'À éviter', 'Fermentation: provoque des gaz/ballonnements et diarrhée'),
-            _buildFoodItem('Pois cassés', 'À éviter', 'Fermentation: provoque des gaz/ballonnements et diarrhée'),
-          ]),
-          _buildCategoryTile('Fruits',[
-            _buildFoodItem('Banane mûre', 'Conseillé', 'Incontournable'),
-            _buildFoodItem('Compote pommes ou poires', 'Conseillé', 'Attention aux fibres insolubles'),
-            _buildFoodItem('Pommes cuites', 'Conseillé', 'Attention aux fibres insolubles'),
-            _buildFoodItem('Poires cuites', 'Conseillé', 'Attention aux fibres insolubles'),
-            _buildFoodItem('Coing', 'Conseillé', 'Attention aux fibres'),
-            _buildFoodItem('Pêche/Nectarine pelée', 'Conseillé', 'Attention aux fibres'),
-
-            _buildFoodItem('Tous types de fruits rouges', 'Modéré', 'Mixés et sans graines si possible'),
-            _buildFoodItem('Melon/Pastèque', 'Modéré', 'Attention aux fibres'),
-            _buildFoodItem('Papaye', 'Modéré', 'Attention aux fibres'),
-            _buildFoodItem('Mangue', 'Modéré', 'Attention aux fibres'),
-            _buildFoodItem('Avocat', 'Modéré', 'Attention aux fibres'),
-            _buildFoodItem('Kiwi', 'Modéré', 'Attention, peut irriter'),
-            _buildFoodItem('Agrumes (orange, clémentine...)', 'Modéré', 'Attention à l\'acidité'),
-            _buildFoodItem('Raisin', 'Modéré', 'A manger sans peau et sans pépins'),
-
-            _buildFoodItem('Fruits crus avec peau', 'À éviter', 'Attention aux fibres'),
-            _buildFoodItem('Fruits secs (pruneaux, abricots secs...)', 'À éviter', 'Attention aux fibres'),
-            _buildFoodItem('Fruits oléagineux (noix, noisettes, amandes...)', 'À éviter', 'Attention aux fibres'),
-            _buildFoodItem('Prune', 'À éviter', 'Très fibreux, limiter sa consommation'),
-            _buildFoodItem('Abricot', 'À éviter', 'Très fibreux, limiter sa consommation'),
-            _buildFoodItem('Cerises', 'À éviter', 'Très fibreux, limiter sa consommation'),
-            _buildFoodItem('Ananas', 'À éviter', 'Très acide, limiter sa consommation'),
-            _buildFoodItem('Fruit de la passion', 'À éviter', 'Très acide, limiter sa consommation'),
-            _buildFoodItem('Citron (pur)', 'À éviter', 'Très acide, limiter sa consommation'),
-
-          ]),
-          _buildCategoryTile('Légumes',[
-            _buildFoodItem('Carottes cuites', 'Conseillé', 'Incontournable'),
-            _buildFoodItem('Haricots verts', 'Conseillé', 'Doit être bien cuit'),
-            _buildFoodItem('Courgette', 'Conseillé', 'Doit être épluchée et épépinée'),
-            _buildFoodItem('Épinards', 'Conseillé', 'Doivent être cuits'),
-            _buildFoodItem('Poireaux', 'Modéré', 'Attention aux fibres'),
-            _buildFoodItem('Potiron/Courge', 'Modéré', 'Attention aux fibres'),
-            _buildFoodItem('Betterave', 'Modéré', 'Attention aux fibres'),
-            _buildFoodItem('Aubergine', 'Modéré', 'Attention aux fibres'),
-            _buildFoodItem('Poireaux', 'Modéré', 'Attention aux fibres'),
-
-          ]),
-          _buildCategoryTile('Boissons',[
-            _buildFoodItem('Eau plate', 'Conseillé', 'Une hydratation optimale pour un microbiote en forme'),
-            _buildFoodItem('Thé vert', 'Modéré', 'Contient de la théine'),
-            _buildFoodItem('Thé noir', 'Modéré', 'Contient plus de théine que le thé vert'),
-            _buildFoodItem('Jus d\'orange', 'À éviter', 'Forte teneur en sucre'),
-            _buildFoodItem('Sodas (Coca-Cola, Schweppes, 7Up...)', 'À éviter', 'Provoque ballonnements et gaz'),
-
-          ]),
+          // Zone d'affichage dynamique (Chargement, Erreur, Liste vide ou Résultats)
+          Expanded(
+            child: _buildBody(),
+          ),
         ],
       ),
+    );
+  }
+
+  // Construit la vue en fonction de l'état actuel (chargement, erreur ou résultats).
+  Widget _buildBody() {
+    if (_isLoading == true){
+      return Center(child: CircularProgressIndicator());
+    }
+
+    if (_errorMessage != null) {
+      return Center(child:
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text('Erreur : $_errorMessage', style: const TextStyle(color: Colors.red)),
+        ),
+      );
+    }
+
+    if (_products.isEmpty) {
+      return const Center(
+        child: Text('Recherchez un aliment pour voir sa composition'),
+      );
+    }
+
+    return ListView.builder(
+      itemCount: _products.length,
+      itemBuilder: (context, index) {
+        final product = _products[index];
+        return _buildProductTile(product);
+      },
+    );
+  }
+
+  // Construit une tuile d'affichage pour un produit alimentaire.
+  Widget _buildProductTile(FoodProduct product) {
+    return ListTile(
+      leading: product.imageUrl != null ? Image.network(
+        product.imageUrl!,
+        width: 50,
+        height: 50,
+        fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) => const Icon(Icons.fastfood, size: 30),
+      ) : const Icon(Icons.fastfood, size: 30),
+
+      title: Text(product.name, style: const TextStyle(fontWeight: FontWeight.bold)),
+      subtitle: Text('${product.brands ?? "Marque non précisée"} • ${product.additives.length} additif(s)'),
+      trailing: const Icon(Icons.chevron_right),
+      onTap: () {
+        // détails analyse
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => ProductDetailScreen(product: product)),
+        );
+      },
     );
   }
 }
