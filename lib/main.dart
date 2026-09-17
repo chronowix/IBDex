@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'src/app/app.dart';
 
-void main() {
-  // TODO: Initialiser les services si nécessaire avant de lancer l'application
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: '.env');
   runApp(const IbdexApp());
 }

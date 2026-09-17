@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ibdex/src/features/nutrition/presentation/product_detail_screen.dart';
 import '../data/open_food_facts_service.dart';
 import '../models/food_product.dart';
 import 'barcode_scanner_screen.dart';
@@ -176,7 +177,7 @@ class _NutritionPageState extends State<NutritionPage> {
     );
   }
 
-  /// Construit une tuile d'affichage pour un produit alimentaire.
+  // Construit une tuile d'affichage pour un produit alimentaire.
   Widget _buildProductTile(FoodProduct product) {
     return ListTile(
       leading: product.imageUrl != null ? Image.network(
@@ -191,7 +192,10 @@ class _NutritionPageState extends State<NutritionPage> {
       subtitle: Text('${product.brands ?? "Marque non précisée"} • ${product.additives.length} additif(s)'),
       trailing: const Icon(Icons.chevron_right),
       onTap: () {
-        // détails analyse : TODO
+        // détails analyse
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => ProductDetailScreen(product: product)),
+        );
       },
     );
   }
