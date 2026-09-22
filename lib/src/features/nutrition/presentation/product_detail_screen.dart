@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:ibdex/src/features/nutrition/data/ollama_service.dart';
+import 'package:ibdex/src/features/nutrition/data/check_ai_service.dart';
+import 'package:ibdex/src/features/nutrition/data/mici_analysis_service.dart';
 import 'package:ibdex/src/features/nutrition/models/food_product.dart';
 
 class ProductDetailScreen extends StatefulWidget {
@@ -12,7 +13,7 @@ class ProductDetailScreen extends StatefulWidget {
 }
 
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
-  final _ollamaService = OllamaService();
+  final _analysisService = getMiciAnalysisService();
 
   MiciAnalysis? _analysis;
   bool _isAnalyzing = false;
@@ -31,7 +32,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     });
 
     try {
-      final result = await _ollamaService.analyzeMici(
+      final result = await _analysisService.analyzeMici(
           ingredients: widget.product.ingredients ?? 'Non précisés',
           additives: widget.product.additives,
       );
