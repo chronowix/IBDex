@@ -88,7 +88,9 @@ class _NutritionPageState extends State<NutritionPage> {
     } catch (e) {
       if (mounted) {
         setState(() {
-          _errorMessage = 'Erreur lors de la récupération du produit: $e';
+          _errorMessage = e.toString().contains('503') || e.toString().contains('502')
+              ? 'Le service Open Food Facts est temporairement surchargé, réessayez dans quelques instants'
+              : 'Erreur lors de la recherche : $e';
           _isLoading = false;
         });
       }
