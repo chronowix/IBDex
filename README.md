@@ -41,7 +41,7 @@ L'application sera structurée de la manière suivante :
 - Sur l'onglet Conseils :
   - Une page avec plusieurs conseils pouvant provenir de sources médicales ou provenant de ma propre expérience (après 10 ans de MICI, tu deviens une encyclopédie :p)
 - Sur l'onglet Nutrition : 
-  - Informations sur les aliments/boissons susceptibles de déclencher une crise ou qui peuvent avoir un impact positif sur la digestion + infos sur les nutriments.
+  - Informations sur les aliments/boissons susceptibles de déclencher une crise ou qui peuvent avoir un impact positif sur la digestion + infos sur les nutriments. Utilisation d'un modèle IA avec l'API de Open Food Facts qui utilise les ingrédients et additifs du produit pour qu'il dise s'il est à proscrire ou OK à consommer.
 - Sur l'onglet Carte :
   - Affiche sur une carte (API OpenStreetMap) la liste des centres/médecins spécialistes en gastro-entérologie/hépatologie (La carte affichera juste la métropole de Rennes pour commencer).
 
