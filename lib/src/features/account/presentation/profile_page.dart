@@ -1,22 +1,75 @@
 import 'package:flutter/material.dart';
+import 'package:ibdex/src/features/account/data/user_profile_service.dart';
+import 'package:ibdex/src/features/account/presentation/edit_profile_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class ProfilePage extends StatelessWidget{
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
-@override
-Widget build(BuildContext context){
-  final user = Supabase.instance.client.auth.currentUser;
-  final email = user?.email ?? 'Email inconnu';
-  final fullName = user?.userMetadata?['full_name'] as String? ?? 'Utilisateur IBDex';
-  final phone = user?.userMetadata?['phone'] as String? ?? 'Non renseigné';
-  final city = user?.userMetadata?['city'] as String? ?? 'Non renseigné';
-  return Scaffold(
-    appBar: AppBar(title: const Text('Mon Profil')),
-    body: SingleChildScrollView(
+
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  final _profileService = UserProfileService();
+
+  UserProfile? _profile;
+  bool _isLoading = true;
+  String? _errorMessage;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfile();
+  }
+
+  Future<void> _loadProfile() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      final profile = await _profileService.getCurrentProfile();
+      if (mounted) {
+        setState(() {
+          _profile = profile;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _errorMessage = 'Erreur de chargement : $e';
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Mon Profil')),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : _errorMessage != null
+          ? Center(child: Text(_errorMessage!, style: const TextStyle(color: Colors.red)))
+          : _buildContent(context),
+    );
+  }
+
+  Widget _buildContent(BuildContext context) {
+    final profile = _profile!;
+    final fullName = profile.fullName ?? 'Utilisateur IBDex';
+    final email = profile.email;
+    final city = profile.region ?? 'Non renseignée';
+    final miciType = profile.miciType ?? 'Non renseigné';
+
+    return SingleChildScrollView(
       child: Column(
         children: [
           const SizedBox(height: 30),
-          // 1. PHOTO DE PROFIL
           Center(
             child: GestureDetector(
               onTap: () => _showImagePicker(context),
@@ -44,56 +97,55 @@ Widget build(BuildContext context){
             ),
           ),
           const SizedBox(height: 20),
-            Text(
-              fullName,
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            Text(city, style: TextStyle(color: Colors.grey)),
-            const SizedBox(height: 30),
+          Text(fullName, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+          Text(city, style: const TextStyle(color: Colors.grey)),
+          const SizedBox(height: 30),
 
-            const Divider(),
-            _buildProfileItem(Icons.email, 'Email', email),
-            _buildProfileItem(Icons.phone, 'Téléphone', phone),
-            _buildProfileItem(Icons.location_on, 'Ville', city),
+          const Divider(),
+          _buildProfileItem(Icons.email, 'Email', email),
+          _buildProfileItem(Icons.location_on, 'Ville', city),
+          _buildProfileItem(Icons.health_and_safety, 'Type de MICI', miciType),
 
-            const SizedBox(height: 20),
+          const SizedBox(height: 20),
 
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                children: [
-                  ElevatedButton(
-                    onPressed: (){
-                    //TODO: form modification
-                    },
-                    style: ElevatedButton.styleFrom(minimumSize: const Size(double.infinity, 50)),
-                    child: const Text('Modifier mon profil'),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              children: [
+                ElevatedButton(
+                  onPressed: () async {
+                    await Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => const EditProfilePage()),
+                    );
+                    _loadProfile();
+                  },
+                  style: ElevatedButton.styleFrom(minimumSize: const Size(double.infinity, 50)),
+                  child: const Text('Modifier mon profil'),
+                ),
+                const SizedBox(height: 12),
+                OutlinedButton(
+                  onPressed: () async {
+                    await Supabase.instance.client.auth.signOut();
+                    if (context.mounted) {
+                      Navigator.of(context).pop();
+                    }
+                  },
+                  style: OutlinedButton.styleFrom(
+                    minimumSize: const Size(double.infinity, 50),
+                    side: const BorderSide(color: Colors.red),
+                    foregroundColor: Colors.red,
                   ),
-                  const SizedBox(height: 12),
-                  OutlinedButton(
-                    onPressed: () async {
-                      await Supabase.instance.client.auth.signOut();
-                      if (context.mounted) {
-                        Navigator.of(context).pop();
-                      }
-                    },
-                    style: OutlinedButton.styleFrom(
-                      minimumSize: const Size(double.infinity, 50),
-                      side: const BorderSide(color: Colors.red),
-                      foregroundColor: Colors.red,
-                    ),
-                    child: const Text('Se déconnecter'),
-                  ),
-                ],
-              ),
+                  child: const Text('Se déconnecter'),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildProfileItem(IconData icon, String label, String value){
+  Widget _buildProfileItem(IconData icon, String label, String value) {
     return ListTile(
       leading: Icon(icon, color: Colors.blue),
       title: Text(label, style: const TextStyle(fontSize: 12, color: Colors.grey)),
